@@ -14,6 +14,46 @@
             margin: 0;
         }
 
+        .countdown-menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            width: 210px;
+            padding: 16px;
+            background: white;
+            border: 1px solid #ffd5b2;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        .menu-title {
+            margin: 0 0 12px;
+            color: #f38020;
+            font-size: 1rem;
+        }
+
+        .menu-item {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .menu-countdown-label {
+            margin: 6px 0 4px;
+            color: #666;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .menu-countdown {
+            color: #f38020;
+            font-size: 1.05rem;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+
         h1 {
             color: #f38020;
             margin-bottom: 12px;
@@ -70,9 +110,29 @@
             letter-spacing: 0.08em;
             color: #666;
         }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 150px 20px 30px;
+            }
+
+            .countdown-menu {
+                top: 12px;
+                left: 12px;
+                right: 12px;
+                width: auto;
+            }
+        }
     </style>
 </head>
 <body>
+    <nav class="countdown-menu" aria-label="Challenge menu">
+        <p class="menu-title">Challenge Menu</p>
+        <p class="menu-item">Etnik's Haircut</p>
+        <p class="menu-countdown-label">Countdown</p>
+        <div class="menu-countdown" id="menu-countdown" aria-live="polite">7d 00h 00m 00s</div>
+    </nav>
+
     <div class="card">
         <h1>Hello from Whatifchallenge.org</h1>
         <p>coming soon to any monitor near you</p>
@@ -106,16 +166,7 @@
 
         function updateCountdown() {
             const now = new Date();
-            const diff = targetDate - now;
-
-            if (diff <= 0) {
-                document.getElementById('days').textContent = '0';
-                document.getElementById('hours').textContent = '0';
-                document.getElementById('minutes').textContent = '0';
-                document.getElementById('seconds').textContent = '0';
-                return;
-            }
-
+            const diff = Math.max(0, targetDate - now);
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
             const minutes = Math.floor((diff / (1000 * 60)) % 60);
@@ -125,6 +176,8 @@
             document.getElementById('hours').textContent = hours;
             document.getElementById('minutes').textContent = minutes;
             document.getElementById('seconds').textContent = seconds;
+            document.getElementById('menu-countdown').textContent =
+                `${days}d ${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
         }
 
         updateCountdown();
