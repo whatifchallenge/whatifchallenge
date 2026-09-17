@@ -64,6 +64,62 @@
             white-space: nowrap;
         }
 
+        .suggestion-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 280px;
+            background: white;
+            border: 1px solid #ffd5b2;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            text-align: left;
+            z-index: 10;
+        }
+
+        .suggestion-box h2 {
+            margin: 0 0 12px;
+            color: #f38020;
+            font-size: 1rem;
+        }
+
+        .suggestion-form label {
+            display: block;
+            margin: 10px 0 6px;
+            font-size: 0.78rem;
+            color: #666;
+            font-weight: 700;
+        }
+
+        .suggestion-form input,
+        .suggestion-form textarea {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #f3d0ad;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font: inherit;
+            background: #fffaf5;
+        }
+
+        .suggestion-form textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .suggestion-form button {
+            margin-top: 12px;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: #f38020;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
         h1 {
             color: #f38020;
             margin-bottom: 12px;
@@ -89,6 +145,14 @@
                 right: 12px;
                 width: auto;
             }
+
+            .suggestion-box {
+                top: auto;
+                right: 12px;
+                left: 12px;
+                bottom: 12px;
+                width: auto;
+            }
         }
     </style>
 </head>
@@ -104,6 +168,25 @@
         <p class="menu-countdown-label">Lorik's Goal Countdown</p>
         <div class="menu-countdown" id="lorik-countdown" aria-live="polite">0d 00h 00m 00s</div>
     </nav>
+
+    <aside class="suggestion-box" aria-label="Suggest a challenge">
+        <h2>Suggest a New Countdown Challenge</h2>
+        <form class="suggestion-form">
+            <label for="name">Name or nickname</label>
+            <input id="name" name="name" type="text" placeholder="Your name or nickname">
+
+            <label for="challenge-name">Challenge name</label>
+            <input id="challenge-name" name="challenge-name" type="text" placeholder="Example: No soda for 30 days">
+
+            <label for="deadline">Suggested deadline</label>
+            <input id="deadline" name="deadline" type="datetime-local">
+
+            <label for="details">Notes or details</label>
+            <textarea id="details" name="details" placeholder="Tell us what the challenge is and why the deadline matters."></textarea>
+
+            <button type="submit">Submit idea</button>
+        </form>
+    </aside>
 
     <div class="card">
         <h1>Hello from Whatifchallenge.org</h1>
