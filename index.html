@@ -78,49 +78,6 @@
             max-width: 620px;
         }
 
-        .countdown-wrap {
-            margin-top: 24px;
-            padding-top: 18px;
-            border-top: 1px solid #eee;
-        }
-
-        .countdown-label {
-            margin: 0 0 12px;
-            font-size: 0.9rem;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: #666;
-        }
-
-        .countdown {
-            display: flex;
-            justify-content: center;
-            gap: 14px;
-            flex-wrap: wrap;
-        }
-
-        .time-box {
-            min-width: 80px;
-            background: #fff8f2;
-            border: 1px solid #ffd5b2;
-            border-radius: 10px;
-            padding: 12px 10px;
-        }
-
-        .time-box strong {
-            display: block;
-            font-size: 1.8rem;
-            color: #f38020;
-            line-height: 1;
-        }
-
-        .time-box span {
-            font-size: 0.72rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #666;
-        }
-
         @media (max-width: 600px) {
             body {
                 padding: 150px 20px 30px;
@@ -147,28 +104,6 @@
         <h1>Hello from Whatifchallenge.org</h1>
         <p>coming soon to any monitor near you</p>
         <p>bush haircuts sox! Cut your hair challenge by end of the week!</p>
-
-        <div class="countdown-wrap">
-            <p class="countdown-label">Challenge ends in</p>
-            <div class="countdown" id="countdown" aria-live="polite">
-                <div class="time-box">
-                    <strong id="days">0</strong>
-                    <span>Days</span>
-                </div>
-                <div class="time-box">
-                    <strong id="hours">0</strong>
-                    <span>Hours</span>
-                </div>
-                <div class="time-box">
-                    <strong id="minutes">0</strong>
-                    <span>Minutes</span>
-                </div>
-                <div class="time-box">
-                    <strong id="seconds">0</strong>
-                    <span>Seconds</span>
-                </div>
-            </div>
-        </div>
     </div>
 
     <script>
@@ -183,10 +118,6 @@
             const minutes = Math.floor((diff / (1000 * 60)) % 60);
             const seconds = Math.floor((diff / 1000) % 60);
 
-            document.getElementById('days').textContent = days;
-            document.getElementById('hours').textContent = hours;
-            document.getElementById('minutes').textContent = minutes;
-            document.getElementById('seconds').textContent = seconds;
             document.getElementById('menu-countdown').textContent =
                 `${days}d ${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
         }
