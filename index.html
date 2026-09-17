@@ -69,6 +69,8 @@
             top: 20px;
             right: 20px;
             width: 280px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
             background: white;
             border: 1px solid #ffd5b2;
             border-radius: 12px;
@@ -78,7 +80,8 @@
             z-index: 10;
         }
 
-        .suggestion-box h2 {
+        .suggestion-box h2,
+        .ideas-heading {
             margin: 0 0 12px;
             color: #f38020;
             font-size: 1rem;
@@ -120,6 +123,56 @@
             cursor: pointer;
         }
 
+        .suggestion-form button:disabled {
+            opacity: 0.65;
+            cursor: wait;
+        }
+
+        .form-status,
+        .empty-ideas {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .form-status {
+            min-height: 1.2em;
+            margin: 8px 0 0;
+        }
+
+        .ideas-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .idea {
+            padding: 10px;
+            border: 1px solid #f3d0ad;
+            border-radius: 8px;
+            background: #fffaf5;
+            font-size: 0.82rem;
+        }
+
+        .idea h3 {
+            margin: 0 0 4px;
+            color: #f38020;
+            font-size: 0.9rem;
+        }
+
+        .idea p {
+            margin: 4px 0;
+        }
+
+        .idea-meta {
+            color: #666;
+            font-size: 0.72rem;
+        }
+
+        .ideas-section {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid #eee;
+        }
+
         h1 {
             color: #f38020;
             margin-bottom: 12px;
@@ -147,11 +200,10 @@
             }
 
             .suggestion-box {
-                top: auto;
-                right: 12px;
-                left: 12px;
-                bottom: 12px;
+                position: static;
                 width: auto;
+                max-height: none;
+                margin: 0 auto 20px;
             }
         }
     </style>
@@ -171,21 +223,29 @@
 
     <aside class="suggestion-box" aria-label="Suggest a challenge">
         <h2>Suggest a New Countdown Challenge</h2>
-        <form class="suggestion-form">
+        <form class="suggestion-form" id="suggestion-form">
             <label for="name">Name or nickname</label>
-            <input id="name" name="name" type="text" placeholder="Your name or nickname">
+            <input id="name" name="name" type="text" maxlength="80" required placeholder="Your name or nickname">
 
             <label for="challenge-name">Challenge name</label>
-            <input id="challenge-name" name="challenge-name" type="text" placeholder="Example: No soda for 30 days">
+            <input id="challenge-name" name="challenge-name" type="text" maxlength="120" required placeholder="Example: No soda for 30 days">
 
             <label for="deadline">Suggested deadline</label>
-            <input id="deadline" name="deadline" type="datetime-local">
+            <input id="deadline" name="deadline" type="datetime-local" required>
 
             <label for="details">Notes or details</label>
-            <textarea id="details" name="details" placeholder="Tell us what the challenge is and why the deadline matters."></textarea>
+            <textarea id="details" name="details" maxlength="500" placeholder="Tell us what the challenge is and why the deadline matters."></textarea>
 
             <button type="submit">Submit idea</button>
+            <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
         </form>
+
+        <section class="ideas-section" aria-labelledby="ideas-heading">
+            <h2 class="ideas-heading" id="ideas-heading">Public Ideas</h2>
+            <div class="ideas-list" id="ideas-list">
+                <p class="empty-ideas">Loading ideas...</p>
+            </div>
+        </section>
     </aside>
 
     <div class="card">
@@ -198,6 +258,10 @@
         // Deadlines are in the visitor's local timezone.
         const etnikTargetDate = new Date(2026, 9, 11, 12, 0, 0);
         const lorikTargetDate = new Date(2026, 8, 20, 9, 30, 0);
+        const ideasApiUrl = '/api/ideas';
+        const suggestionForm = document.getElementById('suggestion-form');
+        const ideasList = document.getElementById('ideas-list');
+        const formStatus = document.getElementById('form-status');
 
         function formatCountdown(targetDate) {
             const now = new Date();
@@ -215,8 +279,88 @@
             document.getElementById('lorik-countdown').textContent = formatCountdown(lorikTargetDate);
         }
 
+        function renderIdeas(ideas) {
+            ideasList.replaceChildren();
+
+            if (!ideas.length) {
+                const emptyMessage = document.createElement('p');
+                emptyMessage.className = 'empty-ideas';
+                emptyMessage.textContent = 'No ideas yet. Be the first to suggest one!';
+                ideasList.appendChild(emptyMessage);
+                return;
+            }
+
+            ideas.forEach((idea) => {
+                const article = document.createElement('article');
+                article.className = 'idea';
+
+                const title = document.createElement('h3');
+                title.textContent = idea.challengeName;
+                article.appendChild(title);
+
+                const author = document.createElement('p');
+                author.className = 'idea-meta';
+                author.textContent = `Suggested by ${idea.name} · Deadline: ${new Date(idea.deadline).toLocaleString()}`;
+                article.appendChild(author);
+
+                if (idea.details) {
+                    const details = document.createElement('p');
+                    details.textContent = idea.details;
+                    article.appendChild(details);
+                }
+
+                ideasList.appendChild(article);
+            });
+        }
+
+        async function loadIdeas() {
+            try {
+                const response = await fetch(ideasApiUrl);
+                if (!response.ok) throw new Error('Unable to load ideas.');
+                renderIdeas(await response.json());
+            } catch (error) {
+                ideasList.replaceChildren();
+                const errorMessage = document.createElement('p');
+                errorMessage.className = 'empty-ideas';
+                errorMessage.textContent = 'Public ideas are temporarily unavailable.';
+                ideasList.appendChild(errorMessage);
+            }
+        }
+
+        suggestionForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const submitButton = suggestionForm.querySelector('button');
+            submitButton.disabled = true;
+            formStatus.textContent = 'Submitting...';
+
+            const formData = new FormData(suggestionForm);
+            const payload = {
+                name: formData.get('name').trim(),
+                challengeName: formData.get('challenge-name').trim(),
+                deadline: formData.get('deadline'),
+                details: formData.get('details').trim()
+            };
+
+            try {
+                const response = await fetch(ideasApiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error('Unable to submit idea.');
+                suggestionForm.reset();
+                formStatus.textContent = 'Idea shared publicly!';
+                await loadIdeas();
+            } catch (error) {
+                formStatus.textContent = 'The idea could not be submitted. Please try again.';
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
+
         updateCountdowns();
         setInterval(updateCountdowns, 1000);
+        loadIdeas();
     </script>
 </body>
 </html>
