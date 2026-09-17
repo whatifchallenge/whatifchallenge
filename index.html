@@ -130,7 +130,7 @@
         <p class="menu-title">Challenge Menu</p>
         <p class="menu-item">Etnik's Haircut</p>
         <p class="menu-countdown-label">Countdown</p>
-        <div class="menu-countdown" id="menu-countdown" aria-live="polite">7d 00h 00m 00s</div>
+        <div class="menu-countdown" id="menu-countdown" aria-live="polite">0d 00h 00m 00s</div>
     </nav>
 
     <div class="card">
@@ -162,7 +162,8 @@
     </div>
 
     <script>
-        const targetDate = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
+        // October 11, 2026 at 12:00 PM in the visitor's local timezone.
+        const targetDate = new Date(2026, 9, 11, 12, 0, 0);
 
         function updateCountdown() {
             const now = new Date();
