@@ -39,10 +39,6 @@
             font-weight: 700;
         }
 
-        .menu-item:last-of-type {
-            margin-bottom: 0;
-        }
-
         .menu-item a {
             color: inherit;
             text-decoration: none;
@@ -99,10 +95,14 @@
 <body>
     <nav class="countdown-menu" aria-label="Countdown Menu">
         <p class="menu-title">Countdown Menu</p>
+
         <p class="menu-item"><a href="etnik-haircut.html">Etnik's Haircut Challenge</a></p>
-        <p class="menu-item"><a href="lorik-season-goal.html">Lorik's First Season Goal</a></p>
         <p class="menu-countdown-label">Etnik's Haircut Countdown</p>
-        <div class="menu-countdown" id="menu-countdown" aria-live="polite">0d 00h 00m 00s</div>
+        <div class="menu-countdown" id="etnik-countdown" aria-live="polite">0d 00h 00m 00s</div>
+
+        <p class="menu-item"><a href="lorik-season-goal.html">Lorik's First Season Goal</a></p>
+        <p class="menu-countdown-label">Lorik's Goal Countdown</p>
+        <div class="menu-countdown" id="lorik-countdown" aria-live="polite">0d 00h 00m 00s</div>
     </nav>
 
     <div class="card">
@@ -112,10 +112,11 @@
     </div>
 
     <script>
-        // October 11, 2026 at 12:00 PM in the visitor's local timezone.
-        const targetDate = new Date(2026, 9, 11, 12, 0, 0);
+        // Deadlines are in the visitor's local timezone.
+        const etnikTargetDate = new Date(2026, 9, 11, 12, 0, 0);
+        const lorikTargetDate = new Date(2026, 8, 20, 9, 30, 0);
 
-        function updateCountdown() {
+        function formatCountdown(targetDate) {
             const now = new Date();
             const diff = Math.max(0, targetDate - now);
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -123,12 +124,16 @@
             const minutes = Math.floor((diff / (1000 * 60)) % 60);
             const seconds = Math.floor((diff / 1000) % 60);
 
-            document.getElementById('menu-countdown').textContent =
-                `${days}d ${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
+            return `${days}d ${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
         }
 
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
+        function updateCountdowns() {
+            document.getElementById('etnik-countdown').textContent = formatCountdown(etnikTargetDate);
+            document.getElementById('lorik-countdown').textContent = formatCountdown(lorikTargetDate);
+        }
+
+        updateCountdowns();
+        setInterval(updateCountdowns, 1000);
     </script>
 </body>
 </html>
