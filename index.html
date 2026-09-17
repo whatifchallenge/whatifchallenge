@@ -39,6 +39,16 @@
             font-weight: 700;
         }
 
+        .menu-item a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .menu-item a:hover,
+        .menu-item a:focus {
+            text-decoration: underline;
+        }
+
         .menu-countdown-label {
             margin: 6px 0 4px;
             color: #666;
@@ -128,7 +138,7 @@
 <body>
     <nav class="countdown-menu" aria-label="Countdown Menu">
         <p class="menu-title">Countdown Menu</p>
-        <p class="menu-item">Etnik's Haircut Challenge</p>
+        <p class="menu-item"><a href="etnik-haircut.html">Etnik's Haircut Challenge</a></p>
         <p class="menu-countdown-label">Countdown</p>
         <div class="menu-countdown" id="menu-countdown" aria-live="polite">0d 00h 00m 00s</div>
     </nav>
