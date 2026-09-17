@@ -25,6 +25,50 @@
 
         h1 {
             color: #f38020;
+            margin-bottom: 12px;
+        }
+
+        .countdown-wrap {
+            margin-top: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #eee;
+        }
+
+        .countdown-label {
+            margin: 0 0 12px;
+            font-size: 0.9rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #666;
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .time-box {
+            min-width: 80px;
+            background: #fff8f2;
+            border: 1px solid #ffd5b2;
+            border-radius: 10px;
+            padding: 12px 10px;
+        }
+
+        .time-box strong {
+            display: block;
+            font-size: 1.8rem;
+            color: #f38020;
+            line-height: 1;
+        }
+
+        .time-box span {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #666;
         }
 
         a {
@@ -36,7 +80,52 @@
     <main class="card">
         <h1>Etnik's Haircut Challenge</h1>
         <p>Cut your hair by the end of the week!</p>
+
+        <div class="countdown-wrap">
+            <p class="countdown-label">Challenge ends in</p>
+            <div class="countdown" id="countdown" aria-live="polite">
+                <div class="time-box">
+                    <strong id="days">0</strong>
+                    <span>Days</span>
+                </div>
+                <div class="time-box">
+                    <strong id="hours">0</strong>
+                    <span>Hours</span>
+                </div>
+                <div class="time-box">
+                    <strong id="minutes">0</strong>
+                    <span>Minutes</span>
+                </div>
+                <div class="time-box">
+                    <strong id="seconds">0</strong>
+                    <span>Seconds</span>
+                </div>
+            </div>
+        </div>
+
         <p><a href="index.html">Back to the home page</a></p>
     </main>
+
+    <script>
+        // October 11, 2026 at 12:00 PM in the visitor's local timezone.
+        const targetDate = new Date(2026, 9, 11, 12, 0, 0);
+
+        function updateCountdown() {
+            const now = new Date();
+            const diff = Math.max(0, targetDate - now);
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diff / (1000 * 60)) % 60);
+            const seconds = Math.floor((diff / 1000) % 60);
+
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = hours;
+            document.getElementById('minutes').textContent = minutes;
+            document.getElementById('seconds').textContent = seconds;
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
 </body>
 </html>
